@@ -13,7 +13,7 @@
       <pubDate>Fri, 11 Dec 2020 00:00:00 +0000</pubDate>
       
       <guid>/post/2020/12/11/test-post/</guid>
-      <description> Working at Juiceland At the end of November I started my new job at Juiceland :) I absolutely love working there. It has been a company I have loved and frequented regularly since I moved to Austin. It is so nice to get my favorite food for free and work with such fun, kind people. import pandas as pd import numpy as np df2 = pd.DataFrame(np.array([[1, 5], [2, 6], [3, 5], [4, 3], [5, 3], [6, 3], [7, 3], [8, 3], [9, 3], [10, 3], [11, 8], [12, 8] ]),columns=[&amp;#39;month&amp;#39;, &amp;#39;happiness&amp;#39;]) df2 ## month happiness ## 0 1 5 ## 1 2 6 ## 2 3 5 ## 3 4 3 ## 4 5 3 ## 5 6 3 ## 6 7 3 ## 7 8 3 ## 8 9 3 ## 9 10 3 ## 10 11 8 ## 11 12 8   </description>
+      <description>Working at Juiceland At the end of November I started my new job at Juiceland :) I absolutely love working there. It has been a company I have loved and frequented regularly since I moved to Austin. It is so nice to get my favorite food for free and work with such fun, kind people.  #I put all of this in comments..idk why the plot wouldnt show #install.packages(&amp;quot;reticulate&amp;quot;) #library(knitr) #library(reticulate) #knitr::knit_engines$set(python = reticulate::eng_python) #import pandas as pd #import numpy as np #import matplotlib.</description>
     </item>
     
     <item>
