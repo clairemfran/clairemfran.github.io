@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Claire Francis" />
+    
+    <link rel="shortcut icon" type="image/x-icon" href="../../img/favicon.ico">
+    <title>Project 2: Modeling, Testing, and Predicting</title>
+    <meta name="generator" content="Hugo 0.79.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../../css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="../../"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="../../post/">BLOG</a></li>
+        
+        <li><a href="../../projects/">PROJECTS</a></li>
+        
+        <li><a href="../../resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="../../project/project2/">Project 2: Modeling, Testing, and Predicting</a></strong>
+          </h3>
+        </div>
+ 
+<div class="blog-title">
+          <h4>
+         December 11, 2020 
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<div id="dataset" class="section level1">
+<h1>Dataset</h1>
+<div id="i-will-be-using-a-dataset-describing-secondary-school-students-drinking-behaviors-in-relation-to-several-factors-of-their-home-and-social-lives.-the-12-variables-are" class="section level4">
+<h4>I will be using a dataset describing secondary school students drinking behaviors in relation to several factors of their home and social lives. The 12 variables are:</h4>
+</div>
+<div id="sex" class="section level4">
+<h4>-sex</h4>
+</div>
+<div id="age" class="section level4">
+<h4>-age</h4>
+</div>
+<div id="adress-urban-or-rural" class="section level4">
+<h4>-adress: urban or rural</h4>
+</div>
+<div id="pstatus-parents-living-apart-or-together" class="section level4">
+<h4>-pstatus: parents living Apart or Together</h4>
+</div>
+<div id="mjob-mothers-job-teacher-healthcare-civil-services-at-home-or-other" class="section level4">
+<h4>-mjob: mother's job (teacher, healthcare, civil services, at home, or other)</h4>
+</div>
+<div id="fjob-fathers-job-teacher-healthcare-civil-services-at-home-or-other" class="section level4">
+<h4>-fjob: father's job (teacher, healthcare, civil services, at home, or other)</h4>
+</div>
+<div id="tutor-0no-tutor-1tutor" class="section level4">
+<h4>-tutor: 0=no tutor, 1=tutor</h4>
+</div>
+<div id="internet-0no-internet-at-home-1internet-at-home" class="section level4">
+<h4>-internet: 0=no internet at home, 1=internet at home</h4>
+</div>
+<div id="romantic-0no-romantic-relationship-1in-a-romantic-relationship" class="section level4">
+<h4>-romantic: 0=no romantic relationship, 1=in a romantic relationship</h4>
+</div>
+<div id="go_out-scale-of-time-out-with-friends.-1-rarely-5extremely-often" class="section level4">
+<h4>-go_out: scale of time out with friends. 1= rarely, 5=extremely often</h4>
+</div>
+<div id="weekday_alc-scale-of-weekday-alcohol-consumption.-1very-low-5-very-high" class="section level4">
+<h4>-weekday_alc: scale of weekday alcohol consumption. 1=very low, 5= very high</h4>
+</div>
+<div id="weekend_alc-scale-of-weekend-alcohol-consumption.-1very-low-5-very-high" class="section level4">
+<h4>-weekend_alc: scale of weekend alcohol consumption. 1=very low, 5= very high</h4>
+</div>
+<div id="there-are-395-observations." class="section level4">
+<h4>There are 395 observations.</h4>
+<pre class="r"><code>library(tidyverse)
+students &lt;- read_csv(&quot;student-mat.csv&quot;) 
+head(students)</code></pre>
+<pre><code>## # A tibble: 6 x 33
+## school sex age address famsize Pstatus Medu Fedu Mjob
+Fjob reason guardian traveltime
+## &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
+&lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt;
+## 1 GP F 18 U GT3 A 4 4 at_h… teac… course mother 2
+## 2 GP F 17 U GT3 T 1 1 at_h… other course father 1
+## 3 GP F 15 U LE3 T 1 1 at_h… other other mother 1
+## 4 GP F 15 U GT3 T 4 2 heal… serv… home mother 1
+## 5 GP F 16 U GT3 T 3 3 other other home father 1
+## 6 GP M 16 U LE3 T 4 3 serv… other reput… mother 1
+## # … with 20 more variables: studytime &lt;dbl&gt;, failures
+&lt;dbl&gt;, schoolsup &lt;chr&gt;, famsup &lt;chr&gt;,
+## # paid &lt;chr&gt;, activities &lt;chr&gt;, nursery &lt;chr&gt;, higher
+&lt;chr&gt;, internet &lt;chr&gt;, romantic &lt;chr&gt;,
+## # famrel &lt;dbl&gt;, freetime &lt;dbl&gt;, goout &lt;dbl&gt;, Dalc &lt;dbl&gt;,
+Walc &lt;dbl&gt;, health &lt;dbl&gt;,
+## # absences &lt;dbl&gt;, G1 &lt;dbl&gt;, G2 &lt;dbl&gt;, G3 &lt;dbl&gt;</code></pre>
+<pre class="r"><code>studentsvar &lt;- students[-c(1,5,7,8,11,12,13,14,15,16,17,19,20,21,24,25,29,31,32,33)]
+head(studentsvar)</code></pre>
+<pre><code>## # A tibble: 6 x 13
+## sex age address Pstatus Mjob Fjob paid internet romantic
+goout Dalc Walc absences
+## &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+&lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 F 18 U A at_home teacher no no no 4 1 1 6
+## 2 F 17 U T at_home other no yes no 3 1 1 4
+## 3 F 15 U T at_home other yes yes no 2 2 3 10
+## 4 F 15 U T health services yes yes yes 2 1 1 2
+## 5 F 16 U T other other yes no no 2 1 2 4
+## 6 M 16 U T services other yes yes no 2 1 2 10</code></pre>
+<pre class="r"><code>studentsvar &lt;- studentsvar %&gt;% rename(tutor = paid)
+studentsvar &lt;- studentsvar %&gt;% rename(weekday_alc = Dalc)
+studentsvar &lt;- studentsvar %&gt;% rename(weekend_alc = Walc)
+studentsvar &lt;- studentsvar %&gt;% rename(go_out = goout)
+studentsvar &lt;- studentsvar %&gt;% mutate(tutor = ifelse(tutor == &quot;no&quot;,0,1))
+studentsvar &lt;- studentsvar %&gt;% mutate(internet = ifelse(internet == &quot;no&quot;,0,1))
+studentsvar &lt;- studentsvar %&gt;% mutate(romantic = ifelse(romantic == &quot;no&quot;,0,1))
+
+studentsvar$age &lt;- students$age %&gt;% as.numeric()
+studentsvar &lt;- studentsvar[(studentsvar$age&lt;19),]
+studentsvar$absences &lt;- studentsvar$absences %&gt;% as.numeric()
+studentsvar &lt;- studentsvar[(studentsvar$absences&lt;20),]
+studentsvar$tutor &lt;- studentsvar$tutor %&gt;% as.integer()
+studentsvar</code></pre>
+<pre><code>## # A tibble: 352 x 13
+## sex age address Pstatus Mjob Fjob tutor internet
+romantic go_out weekday_alc weekend_alc
+## &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+&lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 F 18 U A at_h… teac… 0 0 0 4 1 1
+## 2 F 17 U T at_h… other 0 1 0 3 1 1
+## 3 F 15 U T at_h… other 1 1 0 2 2 3
+## 4 F 15 U T heal… serv… 1 1 1 2 1 1
+## 5 F 16 U T other other 1 0 0 2 1 2
+## 6 M 16 U T serv… other 1 1 0 2 1 2
+## 7 M 16 U T other other 0 1 0 4 1 1
+## 8 F 17 U A other teac… 0 0 0 4 1 1
+## 9 M 15 U A serv… other 1 1 0 2 1 1
+## 10 M 15 U T other other 1 1 0 1 1 1
+## # … with 342 more rows, and 1 more variable: absences
+&lt;dbl&gt;</code></pre>
+</div>
+</div>
+<div id="manova" class="section level1">
+<h1>MANOVA</h1>
+<div id="null-hypothesis-for-manova-for-both-dependent-variables-means-for-each-age-are-equal." class="section level4">
+<h4>Null hypothesis for MANOVA: For both dependent variables, means for each age are equal.</h4>
+</div>
+<div id="alt-hypothesis-for-manova-for-both-dependent-variables-means-for-each-age-are-not-equal." class="section level4">
+<h4>Alt hypothesis for MANOVA: For both dependent variables, means for each age are not equal.</h4>
+</div>
+<div id="overall-manova-was-significant-so-we-will-perform-follow-up-one-way-anovas-for-each-variable." class="section level4">
+<h4>Overall MANOVA was significant, so we will perform follow-up one-way ANOVAs for each variable.</h4>
+</div>
+<div id="univariate-anova" class="section level3">
+<h3>Univariate ANOVA</h3>
+<div id="with-univariate-anova-it-is-determined-only-weekend-alcohol-is-significant." class="section level4">
+<h4>With univariate ANOVA, it is determined only weekend alcohol is significant.</h4>
+</div>
+</div>
+<div id="t-tests" class="section level3">
+<h3>T-tests</h3>
+<div id="after-running-t-tests-15-is-significantly-different-from-16-17-and-18." class="section level4">
+<h4>After running t-tests, 15 is significantly different from 16, 17, and 18.</h4>
+</div>
+</div>
+<div id="type-i-error" class="section level3">
+<h3>Type I Error</h3>
+<div id="at-this-point-i-have-preformed-4-tests-1-manova-1-univariate-anova-and-2-t-tests.-the-type-i-error-rate-is-.054-.0125." class="section level4">
+<h4>At this point, I have preformed 4 tests: 1 MANOVA, 1 univariate ANOVA, and 2 t-tests. The type I error rate is .05/4= .0125.</h4>
+</div>
+<div id="with-this-adjusted-significance-level-15-is-only-significantly-different-from-17-and-18" class="section level4">
+<h4>With this adjusted significance level, 15 is only significantly different from 17 and 18</h4>
+</div>
+</div>
+<div id="assumptions" class="section level3">
+<h3>Assumptions</h3>
+<div id="it-does-not-pass-the-multivariate-normality-assumption-and-manova-assumption-is-violted." class="section level4">
+<h4>It does not pass the multivariate normality assumption, and MANOVA assumption is violted.</h4>
+<pre class="r"><code>library(rstatix)
+# MANOVA
+manproj&lt;-manova(cbind(weekday_alc,weekend_alc)~age, data=studentsvar)
+summary(manproj)</code></pre>
+<pre><code>## Df Pillai approx F num Df den Df Pr(&gt;F)
+## age 1 0.020258 3.6082 2 349 0.02812 *
+## Residuals 350
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code># UNIVARIATE ANOVA
+summary.aov(manproj)</code></pre>
+<pre><code>## Response weekday_alc :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## age 1 1.951 1.9506 2.5326 0.1124
+## Residuals 350 269.569 0.7702
+##
+## Response weekend_alc :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## age 1 11.93 11.9295 7.2084 0.007601 **
+## Residuals 350 579.23 1.6549
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code># T TEST
+pairwise.t.test(studentsvar$weekday_alc,studentsvar$age, p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  studentsvar$weekday_alc and studentsvar$age 
+## 
+##    15   16   17  
+## 16 0.55 -    -   
+## 17 0.31 0.64 -   
+## 18 0.13 0.31 0.58
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(studentsvar$weekend_alc,studentsvar$age, p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  studentsvar$weekend_alc and studentsvar$age 
+## 
+##    15     16     17    
+## 16 0.0586 -      -     
+## 17 0.0027 0.2198 -     
+## 18 0.0161 0.5081 0.6115
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>## Assumptions
+group &lt;- studentsvar$age
+DVs &lt;- studentsvar %&gt;% select(go_out,weekday_alc,weekend_alc)
+#Test multivariate normality for each group (null: assumption met)
+sapply(split(DVs,group), mshapiro_test)</code></pre>
+<pre><code>## 15 16 17 18
+## statistic 0.7344 0.697426 0.8724954 0.8841596
+## p.value 8.415035e-11 3.99365e-13 2.559077e-07
+3.135033e-06</code></pre>
+<pre class="r"><code>#If any p&lt;.05, stop (assumption violated). If not, test homogeneity of covariance matrices</code></pre>
+</div>
+</div>
+</div>
+<div id="anova" class="section level1">
+<h1>ANOVA</h1>
+<div id="the-null-hypothesis-the-true-mean-of-absences-is-the-same-for-all-groups-of-mothers-job." class="section level4">
+<h4>The null hypothesis: The true mean of absences is the same for all groups of mother's job.</h4>
+</div>
+<div id="the-alternative-hypothesis-at-least-one-mean-differs-from-the-others." class="section level4">
+<h4>The alternative hypothesis: At least one mean differs from the others.</h4>
+</div>
+<div id="assummption-of-normality-passed-shown-with-normal-distribution-of-histogram." class="section level4">
+<h4>Assummption of normality passed shown with normal distribution of histogram.</h4>
+</div>
+<div id="the-null-hypothesis-was-not-rejected.-mothers-occupation-has-no-significant-impact-on-the-amount-of-absences." class="section level4">
+<h4>The null hypothesis was not rejected. Mother's occupation has no significant impact on the amount of absences.</h4>
+</div>
+<div id="the-boxplot-visualizes-all-groups-having-similar-distributions-of-going-out-time." class="section level4">
+<h4>The boxplot visualizes all groups having similar distributions of going out time.</h4>
+<pre class="r"><code>col.rainbow &lt;- rainbow(12)
+palette(col.rainbow)
+one.way &lt;- aov(go_out ~ Mjob, data = studentsvar)
+
+summary(one.way)</code></pre>
+<pre><code>##              Df Sum Sq Mean Sq F value Pr(&gt;F)
+## Mjob          4    1.9  0.4707   0.376  0.826
+## Residuals   347  434.8  1.2530</code></pre>
+<pre class="r"><code>ggplot(studentsvar, aes(x=Mjob, y=absences, fill=Mjob)) + 
+    geom_boxplot(alpha=0.3) +
+    theme(legend.position=&quot;none&quot;) </code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-3-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="linear-regression-model" class="section level1">
+<h1>Linear Regression Model</h1>
+<div id="i-tested-if-weekday-alcohol-consumption-and-absences-can-predict-whether-or-not-a-student-has-a-tutor.-i-thought-this-would-be-an-interesting-test-because-my-assumption-was-increased-weekday-alcohol-consumption-and-increased-absences-occur-in-families-with-less-money-families-that-do-not-have-a-tutor." class="section level4">
+<h4>I tested if weekday alcohol consumption and absences can predict whether or not a student has a tutor. I thought this would be an interesting test, because my assumption was increased weekday alcohol consumption and increased absences occur in families with less money, families that do not have a tutor.</h4>
+</div>
+<div id="weekday_alc_c-increases-the-probability-of-having-a-tutor-by-0.124-absences_c-decreases-the-probability-of-having-a-tutor-by-0.004-and-their-interaction-increases-the-probability-of-having-a-tutor-by-0.0349." class="section level4">
+<h4>Weekday_alc_c increases the probability of having a tutor by 0.124, absences_c decreases the probability of having a tutor by 0.004, and their interaction increases the probability of having a tutor by 0.0349.</h4>
+</div>
+<div id="assumptions-1" class="section level3">
+<h3>Assumptions</h3>
+<div id="does-not-have-normality-as-shown-graphically." class="section level4">
+<h4>Does not have normality as shown graphically.</h4>
+</div>
+<div id="does-seem-to-follow-linearity-as-shown-graphically." class="section level4">
+<h4>Does seem to follow linearity as shown graphically.</h4>
+</div>
+<div id="does-not-have-homoskedasity.-with-the-breuch-pagan-test-we-can-reject-the-null-hypothesis-of-homoskedasticity." class="section level4">
+<h4>Does not have homoskedasity. With the Breuch-Pagan test, we can reject the null hypothesis of homoskedasticity.</h4>
+</div>
+</div>
+<div id="recompute-regression-results" class="section level3">
+<h3>Recompute regression results</h3>
+<div id="with-robust-standard-errors-there-is-no-significance.-se-stayed-stable." class="section level4">
+<h4>With robust standard errors, there is no significance. SE stayed stable.</h4>
+</div>
+<div id="it-explains-of-the-variation-i-dont-know-this" class="section level4">
+<h4>It explains () of the variation (I DONT KNOW THIS!)</h4>
+<p>What proportion of the variation in the outcome does your model explain? (4)</p>
+<pre class="r"><code>library(sandwich)
+library(lmtest)
+palette(col.rainbow)
+studentsvarc&lt;- studentsvar%&gt;% mutate(weekday_alc_c=weekday_alc-mean(weekday_alc),absences_c=absences-mean(absences))
+
+
+studentfit&lt;-glm(tutor~weekday_alc_c*absences_c, data=studentsvarc, family=&quot;binomial&quot;)
+coef(studentfit)%&gt;%exp%&gt;%round(5)%&gt;%data.frame</code></pre>
+<pre><code>##                                .
+## (Intercept)              0.84667
+## weekday_alc_c            1.09656
+## absences_c               0.98606
+## weekday_alc_c:absences_c 1.03929</code></pre>
+<pre class="r"><code>coeftest(studentfit)</code></pre>
+<pre><code>##
+## z test of coefficients:
+##
+## Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept) -0.166443 0.109126 -1.5252 0.1272
+## weekday_alc_c 0.092179 0.137226 0.6717 0.5018
+## absences_c -0.014043 0.024154 -0.5814 0.5610
+## weekday_alc_c:absences_c 0.038533 0.025657 1.5019 0.1331</code></pre>
+<pre class="r"><code>studentsvarc$predprob&lt;-predict(studentfit,type=&quot;response&quot;)
+
+resids&lt;-studentfit$residuals; fitvals&lt;-studentfit$fitted.values
+ggplot()+geom_point(aes(fitvals,resids))+geom_hline(yintercept=0, col=&quot;red&quot;)</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-4-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot()+geom_histogram(aes(resids),bins=20)</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-4-2.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(studentsvarc, aes(x=absences_c, y=weekday_alc_c,group=tutor))+geom_point(aes(color=tutor))+
+geom_smooth(method=&quot;lm&quot;,formula=y~1,fullrange=T,aes(color=tutor))+
+theme(legend.position=c(.9,.8))+xlab(&quot;absences&quot;)</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-4-3.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>bptest(studentfit)</code></pre>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  studentfit
+## BP = 10.991, df = 3, p-value = 0.01177</code></pre>
+<pre class="r"><code># Robust SE&#39;s
+coeftest(studentfit, vcov=vcovHC(studentfit))</code></pre>
+<pre><code>##
+## z test of coefficients:
+##
+## Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept) -0.166443 0.110568 -1.5053 0.1322
+## weekday_alc_c 0.092179 0.150424 0.6128 0.5400
+## absences_c -0.014043 0.024205 -0.5802 0.5618
+## weekday_alc_c:absences_c 0.038533 0.025805 1.4932 0.1354</code></pre>
+<pre class="r"><code>(sum((studentsvarc$weekday_alc_c-mean(studentsvarc$weekday_alc_c))^2)-sum(studentfit$residuals^2))/sum((studentsvarc$weekday_alc_c-mean(studentsvarc$weekday_alc_c))^2)</code></pre>
+<pre><code>## [1] -4.261791</code></pre>
+</div>
+</div>
+</div>
+<div id="bootstrapping" class="section level1">
+<h1>Bootstrapping</h1>
+<div id="the-ses-after-bootstrapping-decreased-in-each-variable-substantially-from-the-original-ses.-boostrap-ses-are-smaller-than-robust-in-weekday_alc_c-and-the-weekday_alc_cabsences-_c.-idk-p-values" class="section level4">
+<h4>The SE's after bootstrapping decreased in each variable substantially from the original SE's. Boostrap SE's are smaller than Robust in weekday_alc_c and the weekday_alc_c*absences =_c.<br />
+IDK P VALUES</h4>
+<pre class="r"><code>### Bootstrapping residuals
+  fit&lt;-lm(tutor~weekday_alc_c*absences_c,data=studentsvarc) #fit model
+  resids&lt;-fit$residuals #save residuals
+  fitted&lt;-fit$fitted.values #save yhats/predictions
+   
+  resid_resamp&lt;-replicate(5000,{
+    new_resids&lt;-sample(resids,replace=TRUE) #resample resids w/ replacement
+    studentsvarc$new_y&lt;-fitted+new_resids #add new resids to yhats to get new &quot;data&quot;
+    fit&lt;-lm(new_y~weekday_alc_c*absences_c,data=studentsvarc) #refit model
+    coef(fit) #save coefficient estimates (b0, b1, etc)
+}) 
+  
+resid_resamp%&gt;%t%&gt;%as.data.frame%&gt;%summarize_all(sd)</code></pre>
+<pre><code>## (Intercept) weekday_alc_c absences_c
+weekday_alc_c:absences_c
+## 1 0.02695136 0.03332847 0.005997713 0.005892568</code></pre>
+<p>Using ggplot, make a density plot of the log-odds (logit) colored/grouped by your binary outcome variable (3) # Binary Variable Fit #### As age increases, the probability that a student is in a romantic relationships increases by 0.306. As going out increases, the probability that they're in a romantic relationship increases by 0.0009. #### From the confusion matric, the accuracy is 0.4573864, the sensitivity is 0.05851064, the specificity is 0.9146341, and the precision is 0.44. #### Logit graph, ROC curve shown. #### AUC is 0.5031785, which means it is bad. It is barely better than a classifier that randomly predicts 0s and 1s.</p>
+<pre class="r"><code>studentfitrom&lt;-glm(romantic~go_out+age, data=studentsvar, family=&quot;binomial&quot;)
+coef(studentfitrom)%&gt;%exp%&gt;%round(5)%&gt;%data.frame</code></pre>
+<pre><code>##                   .
+## (Intercept) 0.00285
+## go_out      1.00098
+## age         1.35863</code></pre>
+<pre class="r"><code>coeftest(studentfitrom)</code></pre>
+<pre><code>##
+## z test of coefficients:
+##
+## Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept) -5.86165628 1.81782769 -3.2245 0.001262 **
+## go_out 0.00098022 0.10600085 0.0092 0.992622
+## age 0.30647707 0.11075901 2.7671 0.005656 **
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>studentsvar$prob &lt;- predict(studentfitrom,type=&quot;response&quot;)
+
+# predicted outcomes (if prob&gt;.5, predict malignant, otherwise predict benign)
+studentsvar$predicted &lt;- ifelse(studentsvar$prob&gt;.5,&quot;no&quot;,&quot;yes&quot;)
+
+# confusion matrix
+table(truth=studentsvar$tutor, prediction=studentsvar$predicted)%&gt;%addmargins</code></pre>
+<pre><code>##      prediction
+## truth yes Sum
+##   0   188 188
+##   1   164 164
+##   Sum 352 352</code></pre>
+<pre class="r"><code># accuracy
+(11+150)/352</code></pre>
+<pre><code>## [1] 0.4573864</code></pre>
+<pre class="r"><code>#sensitivity
+11/188</code></pre>
+<pre><code>## [1] 0.05851064</code></pre>
+<pre class="r"><code># specificity
+150/164</code></pre>
+<pre><code>## [1] 0.9146341</code></pre>
+<pre class="r"><code># precision
+11/25</code></pre>
+<pre><code>## [1] 0.44</code></pre>
+<pre class="r"><code># plot
+library(plotROC)
+studentsvar$logit&lt;-predict(studentfitrom)
+
+# ROC curve
+sens&lt;-function(p,studentsvar=studentsvar, tutor=tutor) mean(studentsvar[studentsvar$tutor==1,]$prob&gt;p)
+spec&lt;-function(p,studentsvar=studentsvar, tutor=tutor) mean(studentsvar[studentsvar$tutor==0,]$prob&lt;p)
+sensitivity&lt;-sapply(seq(0,1,.01),sens,studentsvar)
+specificity&lt;-sapply(seq(0,1,.01),spec,studentsvar)
+ROC1&lt;-data.frame(sensitivity,specificity,cutoff=seq(0,1,.01))
+ROC1$TPR&lt;-sensitivity
+ROC1$FPR&lt;-1-specificity
+ROC1%&gt;%ggplot(aes(FPR,TPR))+geom_path(size=1.5)+geom_segment(aes(x=0,y=0,xend=1,yend=1)) +
+scale_x_continuous(limits = c(0,1))</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ROCplot&lt;-ggplot(studentsvar)+geom_roc(aes(d=tutor,m=prob), n.cuts=0)
+ROCplot</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-6-2.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>calc_auc(ROCplot)</code></pre>
+<pre><code>##   PANEL group       AUC
+## 1     1    -1 0.5031785</code></pre>
+<ul>
+<li><strong>6. (25 pts)</strong> Perform a logistic regression predicting the same binary response variable from <em>ALL</em> of the rest of your variables (the more, the better!) # All variable logistic regression #### The accuracy is 0.4602273, the sensitivity is 0.06914894, the specificity is 0.9085366, and the precision is 0.4642857. #### The AUC is 0.5172872, which is still bad. #### After 10-fold CV, the sensitivity is 0.5593651, the sensitivity 0.4750494, the specificity 0.6316069, precision is 0.5278126, and AUC is 0.6018012, which is poor.</li>
+</ul>
+<pre class="r"><code>library(tidyverse)
+library(randomForest)
+library(knitr)
+library(pROC)
+library(lmtest)
+library(glmnet)
+library(pscl)
+studentfitall &lt;- glm(romantic~.,family=&quot;binomial&quot;, data=studentsvarc)
+coef(studentfitall)%&gt;%exp%&gt;%round(5)%&gt;%data.frame</code></pre>
+<pre><code>##                     .
+## (Intercept)   0.00238
+## sexM          0.74011
+## age           1.38645
+## addressU      0.86087
+## PstatusT      0.64578
+## Mjobhealth    1.46024
+## Mjobother     1.23826
+## Mjobservices  0.68941
+## Mjobteacher   0.63699
+## Fjobhealth    0.51292
+## Fjobother     0.39871
+## Fjobservices  0.51656
+## Fjobteacher   0.91105
+## tutor         0.98957
+## internet      2.14900
+## go_out        0.96512
+## weekday_alc   1.01953
+## weekend_alc   1.03661
+## absences      1.00663
+## weekday_alc_c      NA
+## absences_c         NA
+## predprob      3.47686</code></pre>
+<pre class="r"><code>coeftest(studentfitall)</code></pre>
+<pre><code>##
+## z test of coefficients:
+##
+## Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept) -6.0390815 2.4919538 -2.4234 0.015375 *
+## sexM -0.3009591 0.2672137 -1.1263 0.260044
+## age 0.3267476 0.1190493 2.7446 0.006058 **
+## addressU -0.1498072 0.3015084 -0.4969 0.619288
+## PstatusT -0.4373023 0.4046938 -1.0806 0.279886
+## Mjobhealth 0.3786027 0.5236329 0.7230 0.469661
+## Mjobother 0.2137084 0.3841309 0.5563 0.577977
+## Mjobservices -0.3719258 0.4237510 -0.8777 0.380107
+## Mjobteacher -0.4510030 0.4817139 -0.9362 0.349146
+## Fjobhealth -0.6676429 0.7921249 -0.8429 0.399312
+## Fjobother -0.9195207 0.5659561 -1.6247 0.104222
+## Fjobservices -0.6605694 0.5840561 -1.1310 0.258054
+## Fjobteacher -0.0931567 0.6832003 -0.1364 0.891542
+## tutor -0.0104872 0.2542467 -0.0412 0.967098
+## internet 0.7650043 0.3828730 1.9981 0.045710 *
+## go_out -0.0355064 0.1217294 -0.2917 0.770529
+## weekday_alc 0.0193370 0.2296912 0.0842 0.932908
+## weekend_alc 0.0359563 0.1385118 0.2596 0.795180
+## absences 0.0066046 0.0276836 0.2386 0.811435
+## weekday_alc_c NA NA NA NA
+## absences_c NA NA NA NA
+## predprob 1.2461297 2.9290135 0.4254 0.670513
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>studentsvar$logit&lt;-predict(studentfitall)
+studentsvar$prob &lt;- predict(studentfitall,type=&quot;response&quot;)
+# predicted outcomes (if prob&gt;.5, predict malignant, otherwise predict benign)
+studentsvar$predicted &lt;- ifelse(studentsvar$prob&gt;.5,&quot;no&quot;,&quot;yes&quot;)
+# confusion matrix
+table(truth=studentsvar$tutor, prediction=studentsvar$predicted)%&gt;%addmargins</code></pre>
+<pre><code>##      prediction
+## truth  no yes Sum
+##   0    13 175 188
+##   1    15 149 164
+##   Sum  28 324 352</code></pre>
+<pre class="r"><code># accuracy
+(13+149)/352</code></pre>
+<pre><code>## [1] 0.4602273</code></pre>
+<pre class="r"><code>#sensitivity
+13/188</code></pre>
+<pre><code>## [1] 0.06914894</code></pre>
+<pre class="r"><code># specificity
+149/164</code></pre>
+<pre><code>## [1] 0.9085366</code></pre>
+<pre class="r"><code># precision
+13/28</code></pre>
+<pre><code>## [1] 0.4642857</code></pre>
+<pre class="r"><code># plot
+library(plotROC)
+studentsvar$logit&lt;-predict(studentfitall)
+# ROC curve
+sens&lt;-function(p,studentsvar=studentsvar, tutor=tutor) mean(studentsvar[studentsvar$tutor==1,]$prob&gt;p)
+spec&lt;-function(p,studentsvar=studentsvar, tutor=tutor) mean(studentsvar[studentsvar$tutor==0,]$prob&lt;p)
+sensitivity&lt;-sapply(seq(0,1,.01),sens,studentsvar)
+specificity&lt;-sapply(seq(0,1,.01),spec,studentsvar)
+ROC1&lt;-data.frame(sensitivity,specificity,cutoff=seq(0,1,.01))
+ROC1$TPR&lt;-sensitivity
+ROC1$FPR&lt;-1-specificity
+ROC1%&gt;%ggplot(aes(FPR,TPR))+geom_path(size=1.5)+geom_segment(aes(x=0,y=0,xend=1,yend=1)) +
+scale_x_continuous(limits = c(0,1))</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-7-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ROCplot&lt;-ggplot(studentsvar)+geom_roc(aes(d=tutor,m=prob), n.cuts=0)
+ROCplot</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-7-2.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#AUC
+calc_auc(ROCplot)</code></pre>
+<pre><code>##   PANEL group       AUC
+## 1     1    -1 0.5172872</code></pre>
+<pre class="r"><code>#part 2
+set.seed(1234)
+k=10
+library(lmtest)
+
+##declare class_diag
+class_diag&lt;-function(prob,truth){
+  tab&lt;-table(factor(prob&gt;.5,levels=c(&quot;FALSE&quot;,&quot;TRUE&quot;)),truth)
+  acc=sum(diag(tab))/sum(tab)
+  sens=tab[2,2]/colSums(tab)[2]
+  spec=tab[1,1]/colSums(tab)[1]
+  ppv=tab[2,2]/rowSums(tab)[2]
+  
+  if(is.numeric(truth)==FALSE &amp; is.logical(truth)==FALSE) truth&lt;-as.numeric(truth)-1
+  
+  #CALCULATE EXACT AUC
+  ord&lt;-order(prob, decreasing=TRUE)
+  prob &lt;- prob[ord]; truth &lt;- truth[ord]
+  
+  TPR=cumsum(truth)/max(1,sum(truth)) 
+  FPR=cumsum(!truth)/max(1,sum(!truth))
+  
+  dup&lt;-c(prob[-1]&gt;=prob[-length(prob)], FALSE)
+  TPR&lt;-c(0,TPR[!dup],1); FPR&lt;-c(0,FPR[!dup],1)
+  
+  n &lt;- length(TPR)
+  auc&lt;- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+  
+  data.frame(acc,sens,spec,ppv,auc)
+}
+
+
+
+folddata &lt;- studentsvarc %&gt;% sample_frac #put rows of dataset in random order
+folds &lt;- ntile(1:nrow(folddata),n=10) #create fold labels
+
+diags&lt;-NULL
+for(i in 1:k){
+  train &lt;- folddata[folds!=i,] #create training set (all but fold i)
+  test &lt;- folddata[folds==i,] #create test set (just fold i)
+  truth &lt;- test$tutor #save truth labels from fold i
+  
+  fit &lt;- glm(tutor~(.), data=train, family=&quot;binomial&quot;)
+  probs &lt;- predict(fit, newdata=test, type=&quot;response&quot;)
+  
+  diags&lt;-rbind(diags,class_diag(probs,truth))
+}
+
+summarize_all(diags,mean)</code></pre>
+<pre><code>##         acc      sens      spec       ppv       auc
+## 1 0.5593651 0.4750494 0.6316069 0.5278126 0.6018012</code></pre>
+<pre class="r"><code># lasso
+library(glmnet)
+set.seed(1234)
+y&lt;-as.matrix(studentsvarc$tutor) #grab response
+stu_preds&lt;-model.matrix(tutor~.,data=studentsvarc)[,-1] #predictors (drop intercept)
+
+cv &lt;- cv.glmnet(stu_preds,y, family=&quot;binomial&quot;) #picks an optimal value for lambda through 10-fold CV
+
+cv&lt;-cv.glmnet(stu_preds,y,family=&quot;binomial&quot;)
+lasso_fit&lt;-glmnet(stu_preds,y,family=&quot;binomial&quot;,lambda=cv$lambda.1se)
+coef(lasso_fit)</code></pre>
+<pre><code>## 22 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+##                       s0
+## (Intercept)   -0.6855284
+## sexM          -0.1413215
+## age            .        
+## addressU       .        
+## PstatusT       .        
+## Mjobhealth     .        
+## Mjobother      .        
+## Mjobservices   .        
+## Mjobteacher    0.1499939
+## Fjobhealth     .        
+## Fjobother      .        
+## Fjobservices   .        
+## Fjobteacher    .        
+## internet       0.2985545
+## romantic       .        
+## go_out         .        
+## weekday_alc    .        
+## weekend_alc    .        
+## absences       .        
+## weekday_alc_c  .        
+## absences_c     .        
+## predprob       0.7346752</code></pre>
+<pre class="r"><code>problas &lt;- predict(lasso_fit, stu_preds, type=&quot;response&quot;)
+table(predict=as.numeric(problas&gt;.5),truth=studentsvarc$tutor)%&gt;%addmargins</code></pre>
+<pre><code>##        truth
+## predict   0   1 Sum
+##     0   182 143 325
+##     1     6  21  27
+##     Sum 188 164 352</code></pre>
+<pre class="r"><code>21/27</code></pre>
+<pre><code>## [1] 0.7777778</code></pre>
+<p>...</p>
+</div>
+</div>
+
+            
+        <hr>         <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div> 
+            </div>
+          </div>
+
+   <hr>  <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div> 
+        </div>
+      </div>
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="../../js/docs.min.js"></script>
+<script src="../../js/main.js"></script>
+
+<script src="../../js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

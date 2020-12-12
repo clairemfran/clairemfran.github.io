@@ -1,0 +1,353 @@
+---
+title: 'Project 2: Modeling, Testing, and Predicting'
+author: "Claire Francis cmf3258"
+date: '2020-12-11'
+output:
+  html_document:
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+hook_output = knit_hooks$get('output')
+knit_hooks$set(output = function(x, options) {
+  # this hook is used only when the linewidth option is not NULL
+  if (!is.null(n <- options$linewidth)) {
+    x = knitr:::split_lines(x)
+    # any lines wider than n should be wrapped
+    if (any(nchar(x) > n)) x = strwrap(x, width = n)
+    x = paste(x, collapse = '\n')
+  }
+  hook_output(x, options)
+})
+
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE,fig.align="center",warning=FALSE,message=FALSE,fig.width=8, fig.height=5, linewidth=60)
+options(tibble.width = 100,width = 100)
+library(tidyverse)
+```
+
+# Dataset
+#### I will be using a dataset describing secondary school students drinking behaviors in relation to several factors of their home and social lives. The 12 variables are: 
+#### -sex
+#### -age
+#### -adress: urban or rural 
+#### -pstatus: parents living Apart or Together
+#### -mjob: mother's job (teacher, healthcare, civil services, at home, or other)
+#### -fjob: father's job (teacher, healthcare, civil services, at home, or other)
+#### -tutor: 0=no tutor, 1=tutor
+#### -internet: 0=no internet at home, 1=internet at home
+#### -romantic: 0=no romantic relationship, 1=in a romantic relationship
+#### -go_out: scale of time out with friends. 1= rarely, 5=extremely often
+#### -weekday_alc: scale of weekday alcohol consumption. 1=very low, 5= very high
+#### -weekend_alc: scale of weekend alcohol consumption. 1=very low, 5= very high
+
+#### There are 395 observations.
+
+```{r}
+library(tidyverse)
+students <- read_csv("student-mat.csv") 
+head(students)
+studentsvar <- students[-c(1,5,7,8,11,12,13,14,15,16,17,19,20,21,24,25,29,31,32,33)]
+head(studentsvar)
+studentsvar <- studentsvar %>% rename(tutor = paid)
+studentsvar <- studentsvar %>% rename(weekday_alc = Dalc)
+studentsvar <- studentsvar %>% rename(weekend_alc = Walc)
+studentsvar <- studentsvar %>% rename(go_out = goout)
+studentsvar <- studentsvar %>% mutate(tutor = ifelse(tutor == "no",0,1))
+studentsvar <- studentsvar %>% mutate(internet = ifelse(internet == "no",0,1))
+studentsvar <- studentsvar %>% mutate(romantic = ifelse(romantic == "no",0,1))
+
+studentsvar$age <- students$age %>% as.numeric()
+studentsvar <- studentsvar[(studentsvar$age<19),]
+studentsvar$absences <- studentsvar$absences %>% as.numeric()
+studentsvar <- studentsvar[(studentsvar$absences<20),]
+studentsvar$tutor <- studentsvar$tutor %>% as.integer()
+studentsvar
+```
+
+
+# MANOVA
+#### Null hypothesis for MANOVA: For both dependent variables, means for each age are equal.
+#### Alt hypothesis for MANOVA: For both dependent variables, means for each age are not equal.
+#### Overall MANOVA was significant, so we will perform follow-up one-way ANOVAs for each variable.
+### Univariate ANOVA
+#### With univariate ANOVA, it is determined only weekend alcohol is significant. 
+### T-tests
+#### After running t-tests, 15 is significantly different from 16, 17, and 18. 
+### Type I Error
+#### At this point, I have preformed 4 tests: 1 MANOVA, 1 univariate ANOVA, and 2 t-tests. The type I error rate is .05/4= .0125.
+#### With this adjusted significance level, 15 is only significantly different from 17 and 18
+### Assumptions
+#### It does not pass the multivariate normality assumption, and MANOVA assumption is violted. 
+
+```{r}
+library(rstatix)
+# MANOVA
+manproj<-manova(cbind(weekday_alc,weekend_alc)~age, data=studentsvar)
+summary(manproj)
+# UNIVARIATE ANOVA
+summary.aov(manproj)
+# T TEST
+pairwise.t.test(studentsvar$weekday_alc,studentsvar$age, p.adj="none")
+pairwise.t.test(studentsvar$weekend_alc,studentsvar$age, p.adj="none")
+
+
+
+## Assumptions
+group <- studentsvar$age
+DVs <- studentsvar %>% select(go_out,weekday_alc,weekend_alc)
+#Test multivariate normality for each group (null: assumption met)
+sapply(split(DVs,group), mshapiro_test)
+#If any p<.05, stop (assumption violated). If not, test homogeneity of covariance matrices
+```
+
+# ANOVA
+#### The null hypothesis: The true mean of absences is the same for all groups of mother's job.
+#### The alternative hypothesis: At least one mean differs from the others.
+#### Assummption of normality passed shown with normal distribution of histogram.
+#### The null hypothesis was not rejected. Mother's occupation has no significant impact on the amount of absences.
+#### The boxplot visualizes all groups having similar distributions of going out time.
+
+```{r}
+col.rainbow <- rainbow(12)
+palette(col.rainbow)
+one.way <- aov(go_out ~ Mjob, data = studentsvar)
+
+summary(one.way)
+
+ggplot(studentsvar, aes(x=Mjob, y=absences, fill=Mjob)) + 
+    geom_boxplot(alpha=0.3) +
+    theme(legend.position="none") 
+    
+``` 
+
+# Linear Regression Model
+#### I tested if weekday alcohol consumption and absences can predict whether or not a student has a tutor. I thought this would be an interesting test, because my assumption was increased weekday alcohol consumption and increased absences occur in families with less money, families that do not have a tutor.
+#### Weekday_alc_c increases the probability of having a tutor by 0.124, absences_c decreases the probability of having a tutor by 0.004, and their interaction increases the probability of having a tutor by 0.0349. 
+### Assumptions
+#### Does not have normality as shown graphically.
+#### Does seem to follow linearity as shown graphically.
+#### Does not have homoskedasity. With the Breuch-Pagan test, we can reject the null hypothesis of homoskedasticity.
+### Recompute regression results 
+#### With robust standard errors, there is no significance. SE stayed stable. 
+#### It explains () of the variation (I DONT KNOW THIS!)
+What proportion of the variation in the outcome does your model explain? (4)
+```{r}
+library(sandwich)
+library(lmtest)
+palette(col.rainbow)
+studentsvarc<- studentsvar%>% mutate(weekday_alc_c=weekday_alc-mean(weekday_alc),absences_c=absences-mean(absences))
+
+
+studentfit<-glm(tutor~weekday_alc_c*absences_c, data=studentsvarc, family="binomial")
+coef(studentfit)%>%exp%>%round(5)%>%data.frame
+coeftest(studentfit)
+
+studentsvarc$predprob<-predict(studentfit,type="response")
+
+resids<-studentfit$residuals; fitvals<-studentfit$fitted.values
+ggplot()+geom_point(aes(fitvals,resids))+geom_hline(yintercept=0, col="red")
+
+ggplot()+geom_histogram(aes(resids),bins=20)
+
+
+ggplot(studentsvarc, aes(x=absences_c, y=weekday_alc_c,group=tutor))+geom_point(aes(color=tutor))+
+geom_smooth(method="lm",formula=y~1,fullrange=T,aes(color=tutor))+
+theme(legend.position=c(.9,.8))+xlab("absences")
+
+
+bptest(studentfit)
+
+# Robust SE's
+coeftest(studentfit, vcov=vcovHC(studentfit))
+
+(sum((studentsvarc$weekday_alc_c-mean(studentsvarc$weekday_alc_c))^2)-sum(studentfit$residuals^2))/sum((studentsvarc$weekday_alc_c-mean(studentsvarc$weekday_alc_c))^2)
+```
+
+    
+# Bootstrapping
+#### The SE's after bootstrapping decreased in each variable substantially from the original SE's. Boostrap SE's are smaller than Robust in weekday_alc_c and the weekday_alc_c*absences =_c.  
+IDK P VALUES
+
+```{r}
+
+### Bootstrapping residuals
+  fit<-lm(tutor~weekday_alc_c*absences_c,data=studentsvarc) #fit model
+  resids<-fit$residuals #save residuals
+  fitted<-fit$fitted.values #save yhats/predictions
+   
+  resid_resamp<-replicate(5000,{
+    new_resids<-sample(resids,replace=TRUE) #resample resids w/ replacement
+    studentsvarc$new_y<-fitted+new_resids #add new resids to yhats to get new "data"
+    fit<-lm(new_y~weekday_alc_c*absences_c,data=studentsvarc) #refit model
+    coef(fit) #save coefficient estimates (b0, b1, etc)
+}) 
+  
+resid_resamp%>%t%>%as.data.frame%>%summarize_all(sd)
+```
+
+Using ggplot, make a density plot of the log-odds (logit) colored/grouped by your binary outcome variable (3)
+# Binary Variable Fit
+#### As age increases, the probability that a student is in a romantic relationships increases by 0.306. As going out increases, the probability that they're in a romantic relationship increases by 0.0009. 
+#### From the confusion matric, the accuracy is 0.4573864, the sensitivity is 0.05851064, the specificity is 0.9146341, and the precision is 0.44. 
+#### Logit graph, ROC curve shown.
+#### AUC is 0.5031785, which means it is bad. It is barely better than a classifier that randomly predicts 0s and 1s. 
+    
+```{r}
+studentfitrom<-glm(romantic~go_out+age, data=studentsvar, family="binomial")
+coef(studentfitrom)%>%exp%>%round(5)%>%data.frame
+coeftest(studentfitrom)
+
+studentsvar$prob <- predict(studentfitrom,type="response")
+
+# predicted outcomes (if prob>.5, predict malignant, otherwise predict benign)
+studentsvar$predicted <- ifelse(studentsvar$prob>.5,"no","yes")
+
+# confusion matrix
+table(truth=studentsvar$tutor, prediction=studentsvar$predicted)%>%addmargins
+# accuracy
+(11+150)/352
+#sensitivity
+11/188
+# specificity
+150/164
+# precision
+11/25
+
+# plot
+library(plotROC)
+studentsvar$logit<-predict(studentfitrom)
+
+# ROC curve
+sens<-function(p,studentsvar=studentsvar, tutor=tutor) mean(studentsvar[studentsvar$tutor==1,]$prob>p)
+spec<-function(p,studentsvar=studentsvar, tutor=tutor) mean(studentsvar[studentsvar$tutor==0,]$prob<p)
+sensitivity<-sapply(seq(0,1,.01),sens,studentsvar)
+specificity<-sapply(seq(0,1,.01),spec,studentsvar)
+ROC1<-data.frame(sensitivity,specificity,cutoff=seq(0,1,.01))
+ROC1$TPR<-sensitivity
+ROC1$FPR<-1-specificity
+ROC1%>%ggplot(aes(FPR,TPR))+geom_path(size=1.5)+geom_segment(aes(x=0,y=0,xend=1,yend=1)) +
+scale_x_continuous(limits = c(0,1))
+ROCplot<-ggplot(studentsvar)+geom_roc(aes(d=tutor,m=prob), n.cuts=0)
+ROCplot
+calc_auc(ROCplot)
+```
+
+- **6. (25 pts)** Perform a logistic regression predicting the same binary response variable from *ALL* of the rest of your variables (the more, the better!) 
+# All variable logistic regression
+#### The accuracy is 0.4602273, the sensitivity is 0.06914894, the specificity is 0.9085366, and the precision is 0.4642857. 
+#### The AUC is 0.5172872, which is still bad. 
+#### After 10-fold CV, the sensitivity is 0.5593651, the sensitivity 0.4750494, the specificity	0.6316069, precision is 0.5278126, and AUC is 0.6018012, which is poor.
+
+```{r}
+library(tidyverse)
+library(randomForest)
+library(knitr)
+library(pROC)
+library(lmtest)
+library(glmnet)
+library(pscl)
+studentfitall <- glm(romantic~.,family="binomial", data=studentsvarc)
+coef(studentfitall)%>%exp%>%round(5)%>%data.frame
+coeftest(studentfitall)
+studentsvar$logit<-predict(studentfitall)
+studentsvar$prob <- predict(studentfitall,type="response")
+# predicted outcomes (if prob>.5, predict malignant, otherwise predict benign)
+studentsvar$predicted <- ifelse(studentsvar$prob>.5,"no","yes")
+# confusion matrix
+table(truth=studentsvar$tutor, prediction=studentsvar$predicted)%>%addmargins
+# accuracy
+(13+149)/352
+#sensitivity
+13/188
+# specificity
+149/164
+# precision
+13/28
+# plot
+library(plotROC)
+studentsvar$logit<-predict(studentfitall)
+# ROC curve
+sens<-function(p,studentsvar=studentsvar, tutor=tutor) mean(studentsvar[studentsvar$tutor==1,]$prob>p)
+spec<-function(p,studentsvar=studentsvar, tutor=tutor) mean(studentsvar[studentsvar$tutor==0,]$prob<p)
+sensitivity<-sapply(seq(0,1,.01),sens,studentsvar)
+specificity<-sapply(seq(0,1,.01),spec,studentsvar)
+ROC1<-data.frame(sensitivity,specificity,cutoff=seq(0,1,.01))
+ROC1$TPR<-sensitivity
+ROC1$FPR<-1-specificity
+ROC1%>%ggplot(aes(FPR,TPR))+geom_path(size=1.5)+geom_segment(aes(x=0,y=0,xend=1,yend=1)) +
+scale_x_continuous(limits = c(0,1))
+ROCplot<-ggplot(studentsvar)+geom_roc(aes(d=tutor,m=prob), n.cuts=0)
+ROCplot
+#AUC
+calc_auc(ROCplot)
+
+#part 2
+set.seed(1234)
+k=10
+library(lmtest)
+
+##declare class_diag
+class_diag<-function(prob,truth){
+  tab<-table(factor(prob>.5,levels=c("FALSE","TRUE")),truth)
+  acc=sum(diag(tab))/sum(tab)
+  sens=tab[2,2]/colSums(tab)[2]
+  spec=tab[1,1]/colSums(tab)[1]
+  ppv=tab[2,2]/rowSums(tab)[2]
+  
+  if(is.numeric(truth)==FALSE & is.logical(truth)==FALSE) truth<-as.numeric(truth)-1
+  
+  #CALCULATE EXACT AUC
+  ord<-order(prob, decreasing=TRUE)
+  prob <- prob[ord]; truth <- truth[ord]
+  
+  TPR=cumsum(truth)/max(1,sum(truth)) 
+  FPR=cumsum(!truth)/max(1,sum(!truth))
+  
+  dup<-c(prob[-1]>=prob[-length(prob)], FALSE)
+  TPR<-c(0,TPR[!dup],1); FPR<-c(0,FPR[!dup],1)
+  
+  n <- length(TPR)
+  auc<- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+  
+  data.frame(acc,sens,spec,ppv,auc)
+}
+
+
+
+folddata <- studentsvarc %>% sample_frac #put rows of dataset in random order
+folds <- ntile(1:nrow(folddata),n=10) #create fold labels
+
+diags<-NULL
+for(i in 1:k){
+  train <- folddata[folds!=i,] #create training set (all but fold i)
+  test <- folddata[folds==i,] #create test set (just fold i)
+  truth <- test$tutor #save truth labels from fold i
+  
+  fit <- glm(tutor~(.), data=train, family="binomial")
+  probs <- predict(fit, newdata=test, type="response")
+  
+  diags<-rbind(diags,class_diag(probs,truth))
+}
+
+summarize_all(diags,mean)
+
+# lasso
+library(glmnet)
+set.seed(1234)
+y<-as.matrix(studentsvarc$tutor) #grab response
+stu_preds<-model.matrix(tutor~.,data=studentsvarc)[,-1] #predictors (drop intercept)
+
+cv <- cv.glmnet(stu_preds,y, family="binomial") #picks an optimal value for lambda through 10-fold CV
+
+cv<-cv.glmnet(stu_preds,y,family="binomial")
+lasso_fit<-glmnet(stu_preds,y,family="binomial",lambda=cv$lambda.1se)
+coef(lasso_fit)
+problas <- predict(lasso_fit, stu_preds, type="response")
+table(predict=as.numeric(problas>.5),truth=studentsvarc$tutor)%>%addmargins
+21/27
+```
+...

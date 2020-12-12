@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Claire Francis" />
+    
+    <link rel="shortcut icon" type="image/x-icon" href="../../img/favicon.ico">
+    <title>Project 1: Exploratory Data Analysis</title>
+    <meta name="generator" content="Hugo 0.79.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../../css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="../../"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="../../post/">BLOG</a></li>
+        
+        <li><a href="../../projects/">PROJECTS</a></li>
+        
+        <li><a href="../../resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="../../project/project1/">Project 1: Exploratory Data Analysis</a></strong>
+          </h3>
+        </div>
+ 
+<div class="blog-title">
+          <h4>
+         December 11, 2020 
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<div id="choosing-and-tidying-datasets" class="section level2">
+<h2>Choosing and Tidying Datasets</h2>
+<div id="these-are-datasets-i-will-use-in-this-project.-i-am-deleting-columns-from-the-happy-and-health-datasets-that-are-not-simple-to-explain-and-do-not-mesh-well-with-eachother.-because-the-happy-dataset-is-based-off-of-the-year-2015-i-deleted-rows-that-were-not-2015-in-the-health-dataset-and-then-deleted-the-column-year-due-to-this-variable-being-the-same-throughout-both-datasets-now.-then-i-edited-country-names-where-they-were-not-identical-in-both-datasets-in-order-to-make-the-country-names-match-in-format." class="section level4">
+<h4>These are datasets I will use in this project. I am deleting columns from the &quot;happy&quot; and &quot;health&quot; datasets that are not simple to explain and do not mesh well with eachother. Because the &quot;happy&quot; dataset is based off of the year 2015, I deleted rows that were not 2015 in the &quot;health&quot; dataset, and then deleted the column &quot;year&quot; due to this variable being the same throughout both datasets now. Then, I edited country names where they were not identical in both datasets in order to make the country names match in format.</h4>
+<pre class="r"><code>library(tidyverse)
+happy &lt;- read_csv(&quot;happy.csv&quot;)
+health &lt;- read_csv(&quot;health.csv&quot;)
+head(happy)</code></pre>
+<pre><code>## # A tibble: 6 x 13
+##   Country Region `Happiness Rank` `Happiness Scor… `Lower Confiden…
+##   &lt;chr&gt;   &lt;chr&gt;             &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+## 1 Denmark Weste…                1             7.53             7.46
+## 2 Switze… Weste…                2             7.51             7.43
+## 3 Iceland Weste…                3             7.50             7.33
+## 4 Norway  Weste…                4             7.50             7.42
+## 5 Finland Weste…                5             7.41             7.35
+## 6 Canada  North…                6             7.40             7.34
+## # … with 8 more variables: `Upper Confidence Interval` &lt;dbl&gt;, `Economy (GDP per
+## #   Capita)` &lt;dbl&gt;, Family &lt;dbl&gt;, `Health (Life Expectancy)` &lt;dbl&gt;,
+## #   Freedom &lt;dbl&gt;, `Trust (Government Corruption)` &lt;dbl&gt;, Generosity &lt;dbl&gt;,
+## #   `Dystopia Residual` &lt;dbl&gt;</code></pre>
+<pre class="r"><code>happya &lt;- happy[-c(3, 5:13)]
+head(happya)</code></pre>
+<pre><code>## # A tibble: 6 x 3
+##   Country     Region         `Happiness Score`
+##   &lt;chr&gt;       &lt;chr&gt;                      &lt;dbl&gt;
+## 1 Denmark     Western Europe              7.53
+## 2 Switzerland Western Europe              7.51
+## 3 Iceland     Western Europe              7.50
+## 4 Norway      Western Europe              7.50
+## 5 Finland     Western Europe              7.41
+## 6 Canada      North America               7.40</code></pre>
+<pre class="r"><code>head(health)</code></pre>
+<pre><code>## # A tibble: 6 x 22
+##   Country  Year Status `Life expectanc… `Adult Mortalit… `infant deaths` Alcohol
+##   &lt;chr&gt;   &lt;dbl&gt; &lt;chr&gt;             &lt;dbl&gt;            &lt;dbl&gt;           &lt;dbl&gt;   &lt;dbl&gt;
+## 1 Afghan…  2015 Devel…             65                263              62    0.01
+## 2 Afghan…  2014 Devel…             59.9              271              64    0.01
+## 3 Afghan…  2013 Devel…             59.9              268              66    0.01
+## 4 Afghan…  2012 Devel…             59.5              272              69    0.01
+## 5 Afghan…  2011 Devel…             59.2              275              71    0.01
+## 6 Afghan…  2010 Devel…             58.8              279              74    0.01
+## # … with 15 more variables: `percentage expenditure` &lt;dbl&gt;, `Hepatitis
+## #   B` &lt;dbl&gt;, Measles &lt;dbl&gt;, BMI &lt;dbl&gt;, `under-five deaths` &lt;dbl&gt;, Polio &lt;dbl&gt;,
+## #   `Total expenditure` &lt;dbl&gt;, Diphtheria &lt;dbl&gt;, `HIV/AIDS` &lt;dbl&gt;, GDP &lt;dbl&gt;,
+## #   Population &lt;dbl&gt;, `thinness 1-19 years` &lt;dbl&gt;, `thinness 5-9 years` &lt;dbl&gt;,
+## #   `Income composition of resources` &lt;dbl&gt;, Schooling &lt;dbl&gt;</code></pre>
+<pre class="r"><code>healtha &lt;- health[-c(3, 5:10, 12:16, 19:22)]
+head(healtha)</code></pre>
+<pre><code>## # A tibble: 6 x 6
+##   Country      Year `Life expectancy`   BMI   GDP Population
+##   &lt;chr&gt;       &lt;dbl&gt;             &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;
+## 1 Afghanistan  2015              65    19.1 584.    33736494
+## 2 Afghanistan  2014              59.9  18.6 613.      327582
+## 3 Afghanistan  2013              59.9  18.1 632.    31731688
+## 4 Afghanistan  2012              59.5  17.6 670.     3696958
+## 5 Afghanistan  2011              59.2  17.2  63.5    2978599
+## 6 Afghanistan  2010              58.8  16.7 553.     2883167</code></pre>
+<pre class="r"><code>healthb &lt;- healtha[(healtha$Year == 2015), ]
+head(healthb)</code></pre>
+<pre><code>## # A tibble: 6 x 6
+##   Country              Year `Life expectancy`   BMI    GDP Population
+##   &lt;chr&gt;               &lt;dbl&gt;             &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;
+## 1 Afghanistan          2015              65    19.1   584.   33736494
+## 2 Albania              2015              77.8  58    3954.      28873
+## 3 Algeria              2015              75.6  59.5  4133.   39871528
+## 4 Angola               2015              52.4  23.3  3696.    2785935
+## 5 Antigua and Barbuda  2015              76.4  47.7 13567.         NA
+## 6 Argentina            2015              76.3  62.8 13467.   43417765</code></pre>
+<pre class="r"><code>healthc &lt;- healthb[-c(2)]
+head(healthc)</code></pre>
+<pre><code>## # A tibble: 6 x 5
+##   Country             `Life expectancy`   BMI    GDP Population
+##   &lt;chr&gt;                           &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;
+## 1 Afghanistan                      65    19.1   584.   33736494
+## 2 Albania                          77.8  58    3954.      28873
+## 3 Algeria                          75.6  59.5  4133.   39871528
+## 4 Angola                           52.4  23.3  3696.    2785935
+## 5 Antigua and Barbuda              76.4  47.7 13567.         NA
+## 6 Argentina                        76.3  62.8 13467.   43417765</code></pre>
+<pre class="r"><code>healthc[180, 1] &lt;- &quot;Vietnam&quot;
+healthc[179, 1] &lt;- &quot;Venezuela&quot;
+healthc[175, 1] &lt;- &quot;United States&quot;
+healthc[174, 1] &lt;- &quot;Tanzania&quot;
+healthc[173, 1] &lt;- &quot;United Kingdom&quot;
+healthc[131, 1] &lt;- &quot;South Korea&quot;
+healthc[132, 1] &lt;- &quot;Moldova&quot;
+healthc[90, 1] &lt;- &quot;Laos&quot;
+healthc[77, 1] &lt;- &quot;Iran&quot;
+healthc[44, 1] &lt;- &quot;Czech Republic&quot;
+healthc[20, 1] &lt;- &quot;Bolivia&quot;
+healthd &lt;- healthc %&gt;% rename(Life.Expectancy = `Life expectancy`)
+happyb &lt;- happya %&gt;% rename(Happiness.Score = `Happiness Score`)</code></pre>
+</div>
+</div>
+<div id="joining-datasets" class="section level2">
+<h2>Joining Datasets</h2>
+<div id="now-that-each-dataset-will-mesh-well-together-i-will-combine-them-based-off-the-variable-country-with-a-left-join-keeping-the-countries-in-the-health-dataset.-health-dataset-has-183-observations-happy-has-157-observations-and-after-the-join-there-is-157-observations.-i-chose-this-join-due-to-health-having-more-variables-which-i-wanted-fewer-nas-under." class="section level4">
+<h4>Now that each dataset will mesh well together, I will combine them based off the variable &quot;country&quot; with a left join, keeping the countries in the Health dataset. Health dataset has 183 observations, Happy has 157 observations, and after the join there is 157 observations. I chose this join due to Health having more variables, which I wanted fewer NA's under.</h4>
+<pre class="r"><code>countrystatus &lt;- left_join(happyb, healthd, by = &quot;Country&quot;)
+head(countrystatus)</code></pre>
+<pre><code>## # A tibble: 6 x 7
+##   Country    Region      Happiness.Score Life.Expectancy   BMI    GDP Population
+##   &lt;chr&gt;      &lt;chr&gt;                 &lt;dbl&gt;           &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;
+## 1 Denmark    Western Eu…            7.53            86    58.8  5315.    5683483
+## 2 Switzerla… Western Eu…            7.51            83.4  57.4  8990.    8282396
+## 3 Iceland    Western Eu…            7.50            82.7  61    5734.      33815
+## 4 Norway     Western Eu…            7.50            81.8  61.2  7455.     518867
+## 5 Finland    Western Eu…            7.41            81.1  62.1  4245.    5479531
+## 6 Canada     North Amer…            7.40            82.2  67   43316.    3584861</code></pre>
+<pre class="r"><code>nrow(countrystatus)</code></pre>
+<pre><code>## [1] 157</code></pre>
+</div>
+</div>
+<div id="summary-statistics" class="section level2">
+<h2>Summary Statistics</h2>
+<div id="i-utilized-mutate-to-create-a-column-for-gdp-per-capita-by-dividing-the-column-gdp-by-population.-i-utilized-summarize-to-find-the-number-of-nas-and-the-proportion-of-nas-for-each-variable-including-this-variable-just-created.-i-utilized-group_by-to-determine-which-country-had-the-largest-bmi-which-is-kuwait.-i-used-filter-to-determine-which-country-with-above-average-happiness-score-had-the-lowest-gdp-which-is-peru." class="section level4">
+<h4>I utilized mutate to create a column for GDP per capita by dividing the column GDP by Population. I utilized summarize to find the number of NAs and the proportion of NAs for each variable, including this variable just created. I utilized group_by, to determine which country had the largest BMI, which is Kuwait. I used filter to determine which country with above average happiness score had the lowest GDP, which is Peru.</h4>
+</div>
+<div id="to-utilize-the-pivot-functions-i-created-a-table-to-easily-compare-the-means-of-each-variable-by-region.-i-found-this-table-to-be-the-most-interesting-as-it-easily-showed-me-the-mean-gdp-happiness-score-and-other-variables-of-each-region-for-easy-comparison.-i-also-found-the-correlation-matrix-to-be-interesting-as-it-showed-the-two-variables-with-the-highest-correlation-was-happiness.score-and-life.expectancy." class="section level4">
+<h4>To utilize the pivot functions, I created a table to easily compare the means of each variable by region. I found this table to be the most interesting, as it easily showed me the mean GDP, Happiness Score, and other variables of each region for easy comparison. I also found the correlation matrix to be interesting, as it showed the two variables with the highest correlation was Happiness.Score and Life.Expectancy.</h4>
+<pre class="r"><code>library(dplyr)
+options(scipen = 999)
+mutctyst &lt;- countrystatus %&gt;% mutate(GDP.Per.Capita = GDP/Population)
+head(mutctyst)</code></pre>
+<pre><code>## # A tibble: 6 x 8
+##   Country Region Happiness.Score Life.Expectancy   BMI    GDP Population
+##   &lt;chr&gt;   &lt;chr&gt;            &lt;dbl&gt;           &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;
+## 1 Denmark Weste…            7.53            86    58.8  5315.    5683483
+## 2 Switze… Weste…            7.51            83.4  57.4  8990.    8282396
+## 3 Iceland Weste…            7.50            82.7  61    5734.      33815
+## 4 Norway  Weste…            7.50            81.8  61.2  7455.     518867
+## 5 Finland Weste…            7.41            81.1  62.1  4245.    5479531
+## 6 Canada  North…            7.40            82.2  67   43316.    3584861
+## # … with 1 more variable: GDP.Per.Capita &lt;dbl&gt;</code></pre>
+<pre class="r"><code>mutctyst %&gt;% summarize_all(function(x) sum(is.na(x)))</code></pre>
+<pre><code>## # A tibble: 1 x 8
+##   Country Region Happiness.Score Life.Expectancy   BMI   GDP Population
+##     &lt;int&gt;  &lt;int&gt;           &lt;int&gt;           &lt;int&gt; &lt;int&gt; &lt;int&gt;      &lt;int&gt;
+## 1       0      0               0              13    15    29         37
+## # … with 1 more variable: GDP.Per.Capita &lt;int&gt;</code></pre>
+<pre class="r"><code>mutctyst %&gt;% summarize_all(function(x) mean(!is.na(x)))</code></pre>
+<pre><code>## # A tibble: 1 x 8
+##   Country Region Happiness.Score Life.Expectancy   BMI   GDP Population
+##     &lt;dbl&gt;  &lt;dbl&gt;           &lt;dbl&gt;           &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;
+## 1       1      1               1           0.917 0.904 0.815      0.764
+## # … with 1 more variable: GDP.Per.Capita &lt;dbl&gt;</code></pre>
+<pre class="r"><code>mutctyst %&gt;% group_by(Country) %&gt;% arrange(desc(BMI))</code></pre>
+<pre><code>## # A tibble: 157 x 8
+## # Groups:   Country [157]
+##    Country Region Happiness.Score Life.Expectancy   BMI    GDP Population
+##    &lt;chr&gt;   &lt;chr&gt;            &lt;dbl&gt;           &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;
+##  1 Kuwait  Middl…            6.24            74.7  71.4 28975.         NA
+##  2 United… North…            7.10            79.3  69.6    NA          NA
+##  3 Malta   Weste…            6.49            81.7  69.6 23819.     431874
+##  4 Qatar   Middl…            6.38            78.2  69.3 66347.         NA
+##  5 Saudi … Middl…            6.38            74.5  68.2  2733.         NA
+##  6 New Ze… Austr…            7.33            81.6  67.5  3822.         NA
+##  7 Canada  North…            7.40            82.2  67   43316.    3584861
+##  8 Austra… Austr…            7.31            82.8  66.6 56554.   23789338
+##  9 United… Weste…            6.72            81.2  66.6    NA          NA
+## 10 Spain   Weste…            6.36            82.8  66.6 25684.   46447697
+## # … with 147 more rows, and 1 more variable: GDP.Per.Capita &lt;dbl&gt;</code></pre>
+<pre class="r"><code>mutctyst %&gt;% filter(Happiness.Score &gt; mean(Happiness.Score, na.rm = TRUE)) %&gt;% 
+    arrange(GDP)</code></pre>
+<pre><code>## # A tibble: 78 x 8
+##    Country Region Happiness.Score Life.Expectancy   BMI    GDP Population
+##    &lt;chr&gt;   &lt;chr&gt;            &lt;dbl&gt;           &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;
+##  1 Peru    Latin…            5.74            75.5  55.6   63.3   31376671
+##  2 Kazakh… Centr…            5.92            72    53.1  160.    17544126
+##  3 Nicara… Latin…            5.99            74.8  54    296.       68235
+##  4 Italy   Weste…            5.98            82.7  63.6  349.      673582
+##  5 Paragu… Latin…            5.54            74     5.2  419.     6639119
+##  6 Somalia Sub-S…            5.44            55    24.3  427.          NA
+##  7 Ecuador Latin…            5.98            76.2  54.2  626.    16144368
+##  8 Colomb… Latin…            6.48            74.8  57.9  645.    48228697
+##  9 Costa … Latin…            7.09            79.6   6.5 1146.      487852
+## 10 Luxemb… Weste…            6.87            82    61.3 1200.       56964
+## # … with 68 more rows, and 1 more variable: GDP.Per.Capita &lt;dbl&gt;</code></pre>
+<pre class="r"><code>mutctyst %&gt;% group_by(Region) %&gt;% na.omit %&gt;% summarize_if(is.numeric, 
+    c(mean = mean)) %&gt;% pivot_longer(-Region) %&gt;% separate(name, 
+    into = c(&quot;var&quot;, &quot;stat&quot;), sep = &quot;_&quot;) %&gt;% pivot_wider(names_from = &quot;Region&quot;, 
+    values_from = &quot;value&quot;)</code></pre>
+<pre><code>## # A tibble: 6 x 12
+##   var   stat  `Australia and … `Central and Ea… `Eastern Asia` `Latin America …
+##   &lt;chr&gt; &lt;chr&gt;            &lt;dbl&gt;            &lt;dbl&gt;          &lt;dbl&gt;            &lt;dbl&gt;
+## 1 Happ… mean           7.31              5.26           5.36             6.07  
+## 2 Life… mean          82.8              74.7           76.2             74.8   
+## 3 BMI   mean          66.6              48.7           38.2             47.1   
+## 4 GDP   mean       56554.             5774.         13096.            6214.    
+## 5 Popu… mean    23789338           5879334.       1080380         10246376.    
+## 6 GDP.… mean           0.00238           0.0486         0.0929           0.0701
+## # … with 6 more variables: `Middle East and Northern Africa` &lt;dbl&gt;, `North
+## #   America` &lt;dbl&gt;, `Southeastern Asia` &lt;dbl&gt;, `Southern Asia` &lt;dbl&gt;,
+## #   `Sub-Saharan Africa` &lt;dbl&gt;, `Western Europe` &lt;dbl&gt;</code></pre>
+<pre class="r"><code>mutctyst %&gt;% select_if(is.numeric) %&gt;% na.omit %&gt;% cor</code></pre>
+<pre><code>##                 Happiness.Score Life.Expectancy         BMI        GDP
+## Happiness.Score       1.0000000      0.78203225  0.52610243 0.54102845
+## Life.Expectancy       0.7820323      1.00000000  0.55358648 0.46489238
+## BMI                   0.5261024      0.55358648  1.00000000 0.38944879
+## GDP                   0.5410285      0.46489238  0.38944879 1.00000000
+## Population            0.0388351     -0.09574976 -0.01594841 0.04204119
+## GDP.Per.Capita        0.1514822      0.13529485  0.09848509 0.27099222
+##                  Population GDP.Per.Capita
+## Happiness.Score  0.03883510     0.15148219
+## Life.Expectancy -0.09574976     0.13529485
+## BMI             -0.01594841     0.09848509
+## GDP              0.04204119     0.27099222
+## Population       1.00000000    -0.07274153
+## GDP.Per.Capita  -0.07274153     1.00000000</code></pre>
+<pre class="r"><code>mutctyst %&gt;% group_by(Country) %&gt;% arrange(desc(GDP.Per.Capita))</code></pre>
+<pre><code>## # A tibble: 157 x 8
+## # Groups:   Country [157]
+##    Country Region Happiness.Score Life.Expectancy   BMI    GDP Population
+##    &lt;chr&gt;   &lt;chr&gt;            &lt;dbl&gt;           &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;
+##  1 Israel  Middl…            7.27            82.5  64.9 35729.       8381
+##  2 Sri La… South…            4.42            74.9  23.4  3845.       2966
+##  3 Trinid… Latin…            6.17            71.2  47.1 17322.      13692
+##  4 Lithua… Centr…            5.81            73.6  62.4 14252.      29491
+##  5 Croatia Centr…            5.49            78    63.7 11580.      42364
+##  6 Japan   Easte…            5.92            83.7  29   34474.     127141
+##  7 Iceland Weste…            7.50            82.7  61    5734.      33815
+##  8 Surina… Latin…            6.27            71.6  58.3  8819.      55328
+##  9 Albania Centr…            4.66            77.8  58    3954.      28873
+## 10 Georgia Centr…            4.25            74.4  56.2  3765.      37171
+## # … with 147 more rows, and 1 more variable: GDP.Per.Capita &lt;dbl&gt;</code></pre>
+<pre class="r"><code>mutctyst %&gt;% group_by(Region) %&gt;% na.omit %&gt;% summarize_if(is.numeric, 
+    c(sd = sd))</code></pre>
+<pre><code>## # A tibble: 10 x 7
+##    Region Happiness.Score… Life.Expectancy… BMI_sd GDP_sd Population_sd
+##    &lt;chr&gt;             &lt;dbl&gt;            &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;         &lt;dbl&gt;
+##  1 Austr…           NA                NA     NA       NA            NA 
+##  2 Centr…            0.571             4.25  21.3   4618.      9156722.
+##  3 Easte…            0.516             7.45  12.7  18578.      1642422.
+##  4 Latin…            0.746             4.05  21.0   5654.     14352078.
+##  5 Middl…            0.864             3.70   3.37 11773.     27599125.
+##  6 North…           NA                NA     NA       NA            NA 
+##  7 South…            0.960             3.58   9.86  3248.    102526622.
+##  8 South…            0.616             3.31   3.08  1293.     14650761.
+##  9 Sub-S…            0.542             4.97   9.26  2443.     33534943.
+## 10 Weste…            0.802             1.35  13.2  16025.     20196307.
+## # … with 1 more variable: GDP.Per.Capita_sd &lt;dbl&gt;</code></pre>
+<pre class="r"><code>mutctyst %&gt;% filter(Population &gt; median(Population, na.rm = TRUE)) %&gt;% 
+    arrange(desc(Happiness.Score))</code></pre>
+<pre><code>## # A tibble: 60 x 8
+##    Country Region Happiness.Score Life.Expectancy   BMI    GDP Population
+##    &lt;chr&gt;   &lt;chr&gt;            &lt;dbl&gt;           &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;
+##  1 Denmark Weste…            7.53            86    58.8  5315.    5683483
+##  2 Switze… Weste…            7.51            83.4  57.4  8990.    8282396
+##  3 Finland Weste…            7.41            81.1  62.1  4245.    5479531
+##  4 Canada  North…            7.40            82.2  67   43316.    3584861
+##  5 Nether… Weste…            7.34            81.9  62.1 44293.   16939923
+##  6 Austra… Austr…            7.31            82.8  66.6 56554.   23789338
+##  7 Sweden  Weste…            7.29            82.4  59.5  5585.    9799186
+##  8 Austria Weste…            7.12            81.5  57.6 43666.    8633169
+##  9 Germany Weste…            6.99            81    62.3 41177.   81686611
+## 10 Belgium Weste…            6.93            81.1  63.7  4357.   11274196
+## # … with 50 more rows, and 1 more variable: GDP.Per.Capita &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<div id="visualizations" class="section level2">
+<h2>Visualizations</h2>
+<div id="i-created-a-correlation-heatmap-to-visualize-the-correlation-matrix.-life-expectancy-and-happiness-score-are-the-variables-with-the-highest-correlation-and-the-darkest-square.-population-is-the-only-variable-that-has-a-negative-correlation-and-that-negative-correlation-is-with-bmi-gdp-per-capita-and-life-expectancy." class="section level4">
+<h4>I created a correlation heatmap to visualize the correlation matrix. Life expectancy and Happiness Score are the variables with the highest correlation and the darkest square. Population is the only variable that has a negative correlation, and that negative correlation is with BMI, GDP per Capita, and Life Expectancy.</h4>
+</div>
+<div id="i-created-a-scatterplot-of-gdp.per.capita-and-life.expectancy-with-the-points-being-coded-by-happiness.score.-as-a-trend-the-darker-points-which-indicate-lower-happiness.score-are-on-the-lower-end-of-both-variables-where-lighter-dots-are-high-on-life-expectancy-and-high-on-gdp-per-capita." class="section level4">
+<h4>I created a scatterplot of GDP.Per.Capita and Life.Expectancy, with the points being coded by Happiness.Score. As a trend, the darker points, which indicate lower Happiness.Score, are on the lower end of both variables, where lighter dots are high on life expectancy and high on GDP per capita.</h4>
+</div>
+<div id="i-created-a-scatterplot-plotting-life-expectancy-and-happiness-scores-with-the-points-coded-by-region-and-sized-by-population.-i-thought-this-would-be-a-succint-way-to-put-most-of-my-dataframe-into-one-visualization.-western-europe-the-pink-dots-show-the-highest-of-both-variables.-sub-saharan-africa-the-purple-show-the-lowest-on-both-variables.-south-eastern-asia-and-sub-saharan-africa-both-have-the-largest-dots-indicating-larger-populations." class="section level4">
+<h4>I created a scatterplot plotting Life Expectancy and Happiness Scores, with the points coded by region and sized by population. I thought this would be a succint way to put most of my dataframe into one visualization. Western Europe, the pink dots, show the highest of both variables. Sub-Saharan Africa, the purple, show the lowest on both variables. South Eastern Asia and Sub-Saharan Africa both have the largest dots, indicating larger populations.</h4>
+</div>
+<div id="i-created-a-bar-graph-to-compare-mean-happiness-scores-by-region.-this-shows-australia-north-america-western-europe-to-have-the-top-three-highest-happiness-scores." class="section level4">
+<h4>I created a bar graph to compare mean happiness scores by region. This shows Australia, North America, Western Europe to have the top three highest happiness scores.</h4>
+<pre class="r"><code>mutctyst %&gt;% select_if(is.numeric) %&gt;% na.omit %&gt;% cor %&gt;% as.data.frame %&gt;% 
+    rownames_to_column %&gt;% pivot_longer(-1) %&gt;% ggplot(aes(rowname, 
+    name, fill = value)) + geom_tile() + geom_text(aes(label = round(value, 
+    2)), color = &quot;black&quot;, size = 3) + xlab(&quot;&quot;) + ylab(&quot;&quot;) + coord_fixed() + 
+    theme(axis.text.x = element_text(color = &quot;Black&quot;, angle = 90, 
+        hjust = 1)) + theme(axis.text.y = element_text(color = &quot;Black&quot;, 
+    hjust = 1)) + scale_fill_gradient2(low = &quot;dark red&quot;, mid = &quot;white&quot;, 
+    high = &quot;dark green&quot;)</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(data = mutctyst, aes(x = GDP.Per.Capita, y = Life.Expectancy, 
+    color = Happiness.Score)) + geom_point(size = 3) + geom_line(aes(group = Happiness.Score)) + 
+    theme_minimal() + xlim(0, 0.015) + theme(axis.text.x = element_text(color = &quot;Purple&quot;)) + 
+    theme(axis.text.y = element_text(color = &quot;Purple&quot;)) + ggtitle(&quot;Life Expectancy and GDP per Capita Relation to Happiness Score&quot;) + 
+    scale_y_continuous(breaks = seq(50, 90, 5))</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(mutctyst, aes(Happiness.Score, Life.Expectancy)) + geom_point(aes(color = Region, 
+    size = Population)) + ggtitle(&quot;World Regions&#39; Life Expectancy, Happiness, and Population&quot;)</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-4-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>mutctyst %&gt;% ggplot(aes(Region, Happiness.Score)) + geom_bar(stat = &quot;summary&quot;, 
+    fun = &quot;mean&quot;, color = &quot;Pink&quot;, fill = &quot;Pink&quot;) + scale_y_continuous(breaks = seq(0, 
+    8, 0.5)) + theme(axis.text.x = element_text(color = &quot;Dark Blue&quot;, 
+    angle = 75, hjust = 1)) + theme(axis.text.y = element_text(color = &quot;Dark Blue&quot;, 
+    hjust = 1)) + ggtitle(&quot;Happiness Score By Region&quot;)</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-4-4.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="dimensionality-reduction" class="section level2">
+<h2>Dimensionality Reduction</h2>
+<div id="this-is-me-performing-pam.-i-found-the-number-of-clusters-that-would-result-in-the-largest-sillhoutte-width-to-be-2.-the-width-is-.36-which-means-the-structure-is-weak-and-could-be-artificial.-i-visualized-my-clusters-using-ggplot.-the-clusters-appear-distinct-from-one-another-and-within-cluster-similarlarity-is-less-than-ideal." class="section level4">
+<h4>This is me performing PAM. I found the number of clusters that would result in the largest sillhoutte width to be 2. The width is .36, which means the structure is weak and could be artificial. I visualized my clusters using ggplot. The clusters appear distinct from one another and within cluster similarlarity is less than ideal.</h4>
+<pre class="r"><code>library(cluster)
+library(plotly)
+ctyns &lt;- mutctyst %&gt;% select(-Country, -Region) %&gt;% na.omit
+ctysc &lt;- ctyns %&gt;% scale %&gt;% as.data.frame()
+pamproj &lt;- ctysc %&gt;% pam(k = 2)
+pamproj$silinfo$avg.width</code></pre>
+<pre><code>## [1] 0.3613848</code></pre>
+<pre class="r"><code>HL &lt;- ctysc %&gt;% select(Life.Expectancy, Happiness.Score)
+sil_width &lt;- vector()
+for (i in 2:10) {
+    pam_fit &lt;- pam(HL, k = i)
+    sil_width[i] &lt;- pam_fit$silinfo$avg.width
+}
+ggplot() + geom_line(aes(x = 1:10, y = sil_width)) + scale_x_continuous(name = &quot;k&quot;, 
+    breaks = 1:10)</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(pamproj, which = 2)</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>clustproj &lt;- ctysc %&gt;% dplyr::select(Life.Expectancy, Happiness.Score)
+set.seed(348)
+kmeansproj &lt;- clustproj %&gt;% kmeans(2)
+kmeansproj</code></pre>
+<pre><code>## K-means clustering with 2 clusters of sizes 69, 49
+## 
+## Cluster means:
+##   Life.Expectancy Happiness.Score
+## 1       0.6715538       0.6631871
+## 2      -0.9456575      -0.9338758
+## 
+## Clustering vector:
+##   [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+##  [38] 1 1 1 1 1 1 1 1 2 1 1 1 1 1 1 1 1 1 2 1 1 2 1 2 1 1 1 1 1 1 2 1 1 1 1 2 2
+##  [75] 2 1 2 2 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+##  [ reached getOption(&quot;max.print&quot;) -- omitted 18 entries ]
+## 
+## Within cluster sum of squares by cluster:
+## [1] 50.64384 35.33764
+##  (between_SS / total_SS =  63.3 %)
+## 
+## Available components:
+## 
+## [1] &quot;cluster&quot;      &quot;centers&quot;      &quot;totss&quot;        &quot;withinss&quot;     &quot;tot.withinss&quot;
+## [6] &quot;betweenss&quot;    &quot;size&quot;         &quot;iter&quot;         &quot;ifault&quot;</code></pre>
+<pre class="r"><code>kmeansclust &lt;- clustproj %&gt;% mutate(cluster = as.factor(kmeansproj$cluster))
+kmeansclust %&gt;% ggplot(aes(Life.Expectancy, Happiness.Score, 
+    color = cluster)) + geom_point()</code></pre>
+<p><img src="../../project/project1_files/figure-html/unnamed-chunk-5-3.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+
+            
+        <hr>         <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div> 
+            </div>
+          </div>
+
+   <hr>  <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div> 
+        </div>
+      </div>
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="../../js/docs.min.js"></script>
+<script src="../../js/main.js"></script>
+
+<script src="../../js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

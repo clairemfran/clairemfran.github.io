@@ -1,0 +1,149 @@
+---
+title: 'Project 1: Exploratory Data Analysis'
+author: "Claire Francis cmf3258"
+date: '2020-12-11'
+output:
+  html_document:
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+  pdf_document:
+    toc: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, fig.align = "center", warning = F, message = F,
+tidy=TRUE, tidy.opts=list(width.cutoff=60), R.options=list(max.print=100)) 
+```
+
+
+## Choosing and Tidying Datasets
+
+#### These are datasets I will use in this project. I am deleting columns from the "happy" and "health" datasets that are not simple to explain and do not mesh well with eachother. Because the "happy" dataset is based off of the year 2015, I deleted rows that were not 2015 in the "health" dataset, and then deleted the column "year" due to this variable being the same throughout both datasets now. Then, I edited country names where they were not identical in both datasets in order to make the country names match in format. 
+```{r}
+library(tidyverse)
+happy <- read_csv("happy.csv") 
+health <- read_csv("health.csv") 
+head(happy)
+happya <- happy[-c(3,5:13)]
+head(happya)
+head(health)
+healtha <- health[-c(3,5:10,12:16,19:22)]
+head(healtha)
+healthb <- healtha[(healtha$Year==2015),]
+head(healthb)
+healthc <- healthb[-c(2)]
+head(healthc)
+healthc[180,1] <- "Vietnam"
+healthc[179,1] <- "Venezuela"
+healthc[175,1] <- "United States"
+healthc[174,1] <- "Tanzania"
+healthc[173,1] <- "United Kingdom"
+healthc[131,1] <- "South Korea"
+healthc[132,1] <- "Moldova"
+healthc[90,1] <- "Laos"
+healthc[77,1] <- "Iran"
+healthc[44,1] <- "Czech Republic"
+healthc[20,1] <- "Bolivia"
+healthd <- healthc %>% rename(Life.Expectancy = `Life expectancy`)
+happyb <- happya %>% rename(Happiness.Score = `Happiness Score`)
+```
+
+## Joining Datasets
+
+#### Now that each dataset will mesh well together, I will combine them based off the variable "country" with a left join, keeping the countries in the Health dataset. Health dataset has 183 observations, Happy has 157 observations, and after the join there is 157 observations. I chose this join due to Health having more variables, which I wanted fewer NA's under.
+
+```{r}
+countrystatus <- left_join(happyb, healthd, by="Country")
+head(countrystatus)
+nrow(countrystatus)
+```
+
+## Summary Statistics
+
+#### I utilized mutate to create a column for GDP per capita by dividing the column GDP by Population. I utilized summarize to find the number of NAs and the proportion of NAs for each variable, including this variable just created. I utilized group_by, to determine which country had the largest BMI, which is Kuwait. I used filter to determine which country with above average happiness score had the lowest GDP, which is Peru. 
+#### To utilize the pivot functions, I created a table to easily compare the means of each variable by region. I found this table to be the most interesting, as it easily showed me the mean GDP, Happiness Score, and other variables of each region for easy comparison. I also found the correlation matrix to be interesting, as it showed the two variables with the highest correlation was Happiness.Score and Life.Expectancy.
+
+```{R}
+library(dplyr)
+options(scipen=999)
+mutctyst <- countrystatus %>% mutate("GDP.Per.Capita"=GDP/Population)
+head(mutctyst)
+mutctyst %>% summarize_all(function(x) sum(is.na(x)))
+mutctyst %>% summarize_all(function(x) mean(!is.na(x)))
+mutctyst %>% group_by(Country) %>% arrange(desc(BMI))
+mutctyst %>% filter(Happiness.Score > mean(Happiness.Score, na.rm=TRUE)) %>% arrange(GDP)
+mutctyst %>% group_by(Region) %>% na.omit %>% summarize_if(is.numeric, c(mean=mean)) %>% pivot_longer(-Region) %>% separate(name, into=c("var", "stat"), sep = "_") %>% pivot_wider(names_from = "Region", values_from ="value")
+mutctyst %>% select_if(is.numeric) %>% na.omit %>% cor
+mutctyst %>% group_by(Country) %>% arrange(desc(GDP.Per.Capita))
+mutctyst %>% group_by(Region) %>% na.omit %>% summarize_if(is.numeric, c(sd=sd))
+mutctyst %>% filter(Population > median(Population, na.rm=TRUE)) %>% arrange(desc(Happiness.Score))
+```
+
+
+## Visualizations
+
+#### I created a correlation heatmap to visualize the correlation matrix. Life expectancy and Happiness Score are the variables with the highest correlation and the darkest square. Population is the only variable that has a negative correlation, and that negative correlation is with BMI, GDP per Capita, and Life Expectancy.
+#### I created a scatterplot of GDP.Per.Capita and Life.Expectancy, with the points being coded by Happiness.Score. As a trend, the darker points, which indicate lower Happiness.Score, are on the lower end of both variables, where lighter dots are high on life expectancy and high on GDP per capita.
+#### I created a scatterplot plotting Life Expectancy and Happiness Scores, with the points coded by region and sized by population. I thought this would be a succint way to put most of my dataframe into one visualization. Western Europe, the pink dots, show the highest of both variables. Sub-Saharan Africa, the purple, show the lowest on both variables. South Eastern Asia and Sub-Saharan Africa both have the largest dots, indicating larger populations.
+#### I created a bar graph to compare mean happiness scores by region. This shows Australia, North America, Western Europe to have the top three highest happiness scores.
+
+
+```{r}
+mutctyst%>%select_if(is.numeric)%>% na.omit %>% cor %>% as.data.frame %>%
+rownames_to_column %>% pivot_longer(-1) %>%
+ggplot(aes(rowname,name,fill=value))+geom_tile()+
+geom_text(aes(label=round(value,2)), color="black", size=3)+
+xlab("")+ylab("")+coord_fixed()+
+theme(axis.text.x = element_text(color= "Black", angle=90, hjust=1)) +
+theme(axis.text.y = element_text(color= "Black", hjust=1)) +
+scale_fill_gradient2(low="dark red",mid="white",high="dark green")
+
+ggplot(data= mutctyst, aes(x=GDP.Per.Capita, y=Life.Expectancy, color=Happiness.Score)) +
+geom_point(size=3) + geom_line(aes(group = Happiness.Score)) +
+theme_minimal() + xlim(0,.015) + theme(axis.text.x = element_text(color= "Purple")) +
+theme(axis.text.y = element_text(color= "Purple")) + ggtitle("Life Expectancy and GDP per Capita Relation to Happiness Score") + scale_y_continuous(breaks=seq(50,90,5))
+
+ggplot(mutctyst, aes(Happiness.Score, Life.Expectancy))+
+geom_point(aes(color=Region, size=Population)) + ggtitle("World Regions' Life Expectancy, Happiness, and Population")
+
+
+mutctyst %>% ggplot(aes(Region, Happiness.Score)) + 
+geom_bar(stat="summary", fun="mean", color= "Pink", fill="Pink") +
+scale_y_continuous(breaks=seq(0,8,.5)) +
+theme(axis.text.x = element_text(color= "Dark Blue", angle=75, hjust=1)) +
+theme(axis.text.y = element_text(color= "Dark Blue", hjust=1)) +
+ggtitle("Happiness Score By Region")
+```
+
+
+## Dimensionality Reduction
+#### This is me performing PAM. I found the number of clusters that would result in the largest sillhoutte width to be 2. The width is .36, which means the structure is weak and could be artificial. I visualized my clusters using ggplot. The clusters appear distinct from one another and within cluster similarlarity is less than ideal.
+
+```{r}
+library(cluster)
+library(plotly)
+ctyns <- mutctyst %>% select(-Country, -Region) %>% na.omit
+ctysc <- ctyns %>% scale %>% as.data.frame()
+pamproj <- ctysc %>% pam(k=2) 
+pamproj$silinfo$avg.width
+
+HL<-ctysc%>%select(Life.Expectancy,Happiness.Score)
+sil_width<-vector()
+for(i in 2:10){
+pam_fit <- pam(HL, k = i)
+sil_width[i] <- pam_fit$silinfo$avg.width
+}
+ggplot()+geom_line(aes(x=1:10,y=sil_width))+scale_x_continuous(name="k",breaks=1:10)
+
+plot(pamproj, which=2)
+
+
+clustproj<- ctysc %>%dplyr::select(Life.Expectancy,Happiness.Score)
+set.seed(348)
+kmeansproj <- clustproj %>% kmeans(2)
+kmeansproj
+kmeansclust <- clustproj %>% mutate(cluster=as.factor(kmeansproj$cluster))
+kmeansclust %>% ggplot(aes(Life.Expectancy,Happiness.Score, color=cluster)) + geom_point()
+```

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>My Project</title>
+    <link>/</link>
+    <description>Recent content on My Project</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Fri, 11 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>My Austin Job</title>
+      <link>/post/2020/12/11/test-post/</link>
+      <pubDate>Fri, 11 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2020/12/11/test-post/</guid>
+      <description> Working at Juiceland At the end of November I started my new job at Juiceland :) I absolutely love working there. It has been a company I have loved and frequented regularly since I moved to Austin. It is so nice to get my favorite food for free and work with such fun, kind people. import pandas as pd import numpy as np df2 = pd.DataFrame(np.array([[1, 5], [2, 6], [3, 5], [4, 3], [5, 3], [6, 3], [7, 3], [8, 3], [9, 3], [10, 3], [11, 8], [12, 8] ]),columns=[&amp;#39;month&amp;#39;, &amp;#39;happiness&amp;#39;]) df2 ## month happiness ## 0 1 5 ## 1 2 6 ## 2 3 5 ## 3 4 3 ## 4 5 3 ## 5 6 3 ## 6 7 3 ## 7 8 3 ## 8 9 3 ## 9 10 3 ## 10 11 8 ## 11 12 8   </description>
+    </item>
+    
+    <item>
+      <title>Project 1: Exploratory Data Analysis</title>
+      <link>/project/project1/</link>
+      <pubDate>Fri, 11 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/project/project1/</guid>
+      <description>Choosing and Tidying Datasets These are datasets I will use in this project. I am deleting columns from the &amp;quot;happy&amp;quot; and &amp;quot;health&amp;quot; datasets that are not simple to explain and do not mesh well with eachother. Because the &amp;quot;happy&amp;quot; dataset is based off of the year 2015, I deleted rows that were not 2015 in the &amp;quot;health&amp;quot; dataset, and then deleted the column &amp;quot;year&amp;quot; due to this variable being the same throughout both datasets now.</description>
+    </item>
+    
+    <item>
+      <title>Project 2: Modeling, Testing, and Predicting</title>
+      <link>/project/project2/</link>
+      <pubDate>Fri, 11 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/project/project2/</guid>
+      <description>Dataset I will be using a dataset describing secondary school students drinking behaviors in relation to several factors of their home and social lives. The 12 variables are:  -sex  -age  -adress: urban or rural  -pstatus: parents living Apart or Together  -mjob: mother&#39;s job (teacher, healthcare, civil services, at home, or other)  -fjob: father&#39;s job (teacher, healthcare, civil services, at home, or other)  -tutor: 0=no tutor, 1=tutor  -internet: 0=no internet at home, 1=internet at home  -romantic: 0=no romantic relationship, 1=in a romantic relationship  -go_out: scale of time out with friends.</description>
+    </item>
+    
+    <item>
+      <title>Hello R Markdown</title>
+      <link>/post/2015/07/23/hello-r-markdown/</link>
+      <pubDate>Thu, 23 Jul 2015 21:13:14 -0500</pubDate>
+      
+      <guid>/post/2015/07/23/hello-r-markdown/</guid>
+      <description>R Markdown This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
+You can embed an R code chunk like this:
+summary(cars) ## speed dist ## Min. : 4.0 Min. : 2.00 ## 1st Qu.:12.0 1st Qu.: 26.00 ## Median :15.0 Median : 36.00 ## Mean :15.4 Mean : 42.98 ## 3rd Qu.</description>
+    </item>
+    
+    <item>
+      <title>Projects</title>
+      <link>/projects/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/projects/</guid>
+      <description> Check out some of my coding projects below:
+ Wrangling &amp;amp; Exploratory Data Analysis
+ Modeling, Inference, Prediction
+  -- </description>
+    </item>
+    
+    <item>
+      <title>Resume</title>
+      <link>/resume/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/resume/</guid>
+      <description>    </description>
+    </item>
+    
+  </channel>
+</rss>
